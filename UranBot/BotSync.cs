@@ -104,6 +104,10 @@ public static class BotSync
         
         foreach (SocketGuildUser user in guild.Users)
         {
+            if (user.IsBot)
+            {
+                continue;
+            }
             long userId = dbContext.GetUserIdByDiscordId(user.Id);
             long guildId = dbContext.GetGuildIdByDiscordId(guild.Id);
                 
