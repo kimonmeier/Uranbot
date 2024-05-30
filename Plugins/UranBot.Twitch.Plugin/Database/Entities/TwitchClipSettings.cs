@@ -1,5 +1,4 @@
-﻿using UranBot.Public.Database.Entities;
-using UranBot.Twitch.Plugin.Database.Enums;
+﻿using UranBot.Twitch.Plugin.Database.Enums;
 
 namespace UranBot.Twitch.Plugin.Database.Entities;
 

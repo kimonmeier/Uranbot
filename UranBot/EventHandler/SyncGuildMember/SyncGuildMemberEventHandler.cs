@@ -13,15 +13,20 @@ public class SyncGuildMemberEventHandler : IRequestHandler<SyncGuildMemberEvent,
 
     public async Task<bool> Handle(SyncGuildMemberEvent request, CancellationToken cancellationToken)
     {
-        long userId = _dbContext.GetUserIdByDiscordId(request.User.Id);
-        long guildId = _dbContext.GetGuildIdByDiscordId(request.Guild.Id);
+        long? userId = _dbContext.GetEntityIdByDiscordId<DiscordUser>(request.User.Id);
+        long? guildId = _dbContext.GetEntityIdByDiscordId<DiscordGuild>(request.Guild.Id);
+
+        if (userId is null || guildId is null)
+        {
+            throw new Exception("The User or Guild couldn't be found");
+        }
 
         bool retVal = false;
         if (!_dbContext.Set<DiscordGuildMember>().Any(x => x.UserId == userId && x.GuildId == guildId))
         {
             _dbContext.Add(new DiscordGuildMember()
             {
-                GuildId = guildId, UserId = userId
+                GuildId = guildId.Value, UserId = userId.Value
             });
         }
         else

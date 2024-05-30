@@ -8,6 +8,7 @@ global using Microsoft.EntityFrameworkCore;
 global using Microsoft.EntityFrameworkCore.Metadata.Builders;
 global using TwitchLib.Api.Helix.Models.Clips.GetClips;
 global using UranBot.Public.Database;
+global using UranBot.Public.Database.Entities;
 global using UranBot.Public.Database.Entities.Base;
 global using UranBot.Public.Discord;
 global using UranBot.Public.Events;

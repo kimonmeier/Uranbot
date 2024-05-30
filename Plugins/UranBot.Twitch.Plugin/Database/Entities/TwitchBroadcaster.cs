@@ -4,5 +4,9 @@ public class TwitchBroadcaster : BaseEntity
 {
     public string BroadcasterName { get; set; }
     
-    public required string TwitchId { get; set; }
+    public string TwitchId { get; set; }
+    
+    public long GuildId { get; set; }
+    
+    public virtual DiscordGuild Guild { get; set; }
 }

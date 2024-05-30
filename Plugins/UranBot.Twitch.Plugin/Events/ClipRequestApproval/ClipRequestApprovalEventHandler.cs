@@ -1,5 +1,4 @@
-﻿using UranBot.Public.Database.Entities;
-using UranBot.Twitch.Plugin.Events.ClipRequestApproved;
+﻿using UranBot.Twitch.Plugin.Events.ClipRequestApproved;
 using UranBot.Twitch.Plugin.Events.ClipRequestDenied;
 using UranBot.Twitch.Plugin.Helper;
 

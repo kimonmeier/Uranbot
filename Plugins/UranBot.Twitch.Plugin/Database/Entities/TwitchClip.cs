@@ -1,6 +1,4 @@
-﻿using UranBot.Public.Database.Entities;
-
-namespace UranBot.Twitch.Plugin.Database.Entities;
+﻿namespace UranBot.Twitch.Plugin.Database.Entities;
 
 public class TwitchClip : BaseEntity
 {

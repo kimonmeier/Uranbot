@@ -1,5 +1,4 @@
 ﻿using Discord;
-using UranBot.Public.Database.Entities;
 using UranBot.Twitch.Plugin.Helper;
 
 namespace UranBot.Twitch.Plugin.Events.PostClip;

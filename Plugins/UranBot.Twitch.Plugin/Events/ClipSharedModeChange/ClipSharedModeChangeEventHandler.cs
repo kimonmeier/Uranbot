@@ -11,26 +11,24 @@ public class ClipSharedModeChangeEventHandler : IRequestHandler<ClipSharedModeCh
 
     public async Task Handle(ClipSharedModeChangeEvent request, CancellationToken cancellationToken)
     {
-        TwitchBroadcaster? broadcaster = await _dbContext.Set<TwitchBroadcaster>().SingleOrDefaultAsync(x => x.BroadcasterName == request.BroadcasterName);
+        long guildId = _dbContext.GetEntityIdByDiscordId<DiscordGuild>(request.InteractionContext.Guild.Id)!.Value;
+        TwitchBroadcaster? broadcaster = _dbContext.Set<TwitchBroadcaster>().SingleOrDefault(x => x.GuildId == guildId && x.BroadcasterName == request.BroadcasterName);
         if (broadcaster is null)
         {
             await request.SendFailureMessage($"The broadcaster {request.BroadcasterName} is unkown");
-
             return;
         }
 
-        TwitchClipSettings? settings = await _dbContext.Set<TwitchClipSettings>().SingleOrDefaultAsync(x => x.BroadcasterId == broadcaster.Id);
+        TwitchClipSettings? settings = _dbContext.Set<TwitchClipSettings>().SingleOrDefault(x => x.BroadcasterId == broadcaster.Id);
         if (settings is null)
         {
             await request.SendFailureMessage($"The clip sharing is not enabled for {request.BroadcasterName}");
-
             return;
         }
 
         if (request.ShareMode == TwitchClipShareMode.Approval && request.ApprovalChannel is null)
         {
             await request.SendFailureMessage($"An approval channel for the clips must be submitted");
-
             return;
         }
 
@@ -40,7 +38,7 @@ public class ClipSharedModeChangeEventHandler : IRequestHandler<ClipSharedModeCh
         }
         else
         {
-            settings.ApprovalChannelId = _dbContext.GetChannelIdByDiscordId(request.ApprovalChannel.Id);
+            settings.ApprovalChannelId = _dbContext.GetEntityIdByDiscordId<DiscordChannel>(request.ApprovalChannel.Id);
         }
 
         settings.ShareMode = request.ShareMode;

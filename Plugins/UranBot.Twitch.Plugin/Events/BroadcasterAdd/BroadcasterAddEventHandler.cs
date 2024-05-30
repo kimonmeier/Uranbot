@@ -16,12 +16,12 @@ public class BroadcasterAddEventHandler : IRequestHandler<BroadcasterAddEvent>
 
     public async Task Handle(BroadcasterAddEvent request, CancellationToken cancellationToken)
     {
-        TwitchBroadcaster? twitchBroadcaster = await _dbContext.Set<TwitchBroadcaster>().FirstOrDefaultAsync(x => x.BroadcasterName == request.Name);
+        long guildId = _dbContext.GetEntityIdByDiscordId<DiscordGuild>(request.InteractionContext.Guild.Id)!.Value;
+        TwitchBroadcaster? twitchBroadcaster = _dbContext.Set<TwitchBroadcaster>().SingleOrDefault(x => x.GuildId == guildId && x.BroadcasterName == request.Name);
 
         if (twitchBroadcaster is not null)
         {
             await request.SendFailureMessage($"The broadcaster {request.Name} already exists");
-
             return;
         }
 
@@ -41,6 +41,7 @@ public class BroadcasterAddEventHandler : IRequestHandler<BroadcasterAddEvent>
         _dbContext.Set<TwitchBroadcaster>().Add(new TwitchBroadcaster()
         {
             BroadcasterName = request.Name,
+            GuildId = guildId,
             TwitchId = user.Id
         });
         await _dbContext.SaveChangesAsync(cancellationToken);
