@@ -14,6 +14,7 @@ public class DeleteAnnouncementEventHandler : IRequestHandler<DeleteAnnouncement
     public async Task Handle(DeleteAnnouncementEvent request, CancellationToken cancellationToken)
     {
         await _discordService.DeleteMessage(request.Announcement.Message);
+        _dbContext.Remove(request.Announcement);
 
         await _dbContext.SaveChangesAsync(cancellationToken);
     }

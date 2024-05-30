@@ -107,5 +107,6 @@ public class DiscordService : IDiscordService
         await message.DeleteAsync();
 
         _dbContext.Set<DiscordMessage>().Remove(_dbContext.Set<DiscordMessage>().Single(x => x.Id == discordMessage.Id));
+        await _dbContext.SaveChangesAsync();
     }
 }
