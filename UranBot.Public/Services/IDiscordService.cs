@@ -6,7 +6,11 @@ public interface IDiscordService
     
     Task<long> SendMessage(long discordChannelId, Embed message);
     
+    Task<long> SendMessage(long discordChannelId, string message, Embed embed);
+    
     Task UpdateMessage(DiscordMessage message, Embed embed);
+    
+    Task UpdateMessage(DiscordMessage message, string messageContent);
     
     Task<IMessage> GetMessage(long messageId);
     

@@ -1,5 +1,4 @@
-﻿using TwitchLib.Api;
-using UranBot.Twitch.Plugin.Events.PostClip;
+﻿using UranBot.Twitch.Plugin.Events.PostClip;
 
 namespace UranBot.Twitch.Plugin.Events.PostClipManual;
 

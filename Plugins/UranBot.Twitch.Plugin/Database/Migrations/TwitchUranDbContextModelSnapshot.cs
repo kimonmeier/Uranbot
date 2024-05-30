@@ -102,6 +102,28 @@ namespace UranBot.Twitch.Plugin.Database.Migrations
                         });
                 });
 
+            modelBuilder.Entity("UranBot.Public.Database.Entities.DiscordRole", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<ulong>("DiscordId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long>("GuildId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GuildId");
+
+                    b.ToTable("DiscordRole", t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
             modelBuilder.Entity("UranBot.Public.Database.Entities.DiscordUser", b =>
                 {
                     b.Property<long>("Id")
@@ -119,6 +141,59 @@ namespace UranBot.Twitch.Plugin.Database.Migrations
                         });
                 });
 
+            modelBuilder.Entity("UranBot.Twitch.Plugin.Database.Entities.TwitchAnnouncement", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long>("BroadcasterId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long>("MessageId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BroadcasterId")
+                        .IsUnique();
+
+                    b.HasIndex("MessageId");
+
+                    b.ToTable("TwitchAnnouncement", "Twitch");
+                });
+
+            modelBuilder.Entity("UranBot.Twitch.Plugin.Database.Entities.TwitchAnnouncementSettings", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long>("BroadcasterId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long>("ChannelId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<long>("RoleId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChannelId");
+
+                    b.HasIndex("RoleId");
+
+                    b.HasIndex("BroadcasterId", "ChannelId")
+                        .IsUnique();
+
+                    b.ToTable("TwitchAnnouncementSettings", "Twitch");
+                });
+
             modelBuilder.Entity("UranBot.Twitch.Plugin.Database.Entities.TwitchBroadcaster", b =>
                 {
                     b.Property<long>("Id")
@@ -129,13 +204,18 @@ namespace UranBot.Twitch.Plugin.Database.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<long>("GuildId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("TwitchId")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BroadcasterName")
+                    b.HasIndex("GuildId");
+
+                    b.HasIndex("BroadcasterName", "GuildId")
                         .IsUnique();
 
                     b.ToTable("TwitchBroadcaster", "Twitch");
@@ -237,6 +317,74 @@ namespace UranBot.Twitch.Plugin.Database.Migrations
                     b.Navigation("Channel");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("UranBot.Public.Database.Entities.DiscordRole", b =>
+                {
+                    b.HasOne("UranBot.Public.Database.Entities.DiscordGuild", "Guild")
+                        .WithMany()
+                        .HasForeignKey("GuildId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Guild");
+                });
+
+            modelBuilder.Entity("UranBot.Twitch.Plugin.Database.Entities.TwitchAnnouncement", b =>
+                {
+                    b.HasOne("UranBot.Twitch.Plugin.Database.Entities.TwitchBroadcaster", "Broadcaster")
+                        .WithMany()
+                        .HasForeignKey("BroadcasterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("UranBot.Public.Database.Entities.DiscordMessage", "Message")
+                        .WithMany()
+                        .HasForeignKey("MessageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Broadcaster");
+
+                    b.Navigation("Message");
+                });
+
+            modelBuilder.Entity("UranBot.Twitch.Plugin.Database.Entities.TwitchAnnouncementSettings", b =>
+                {
+                    b.HasOne("UranBot.Twitch.Plugin.Database.Entities.TwitchBroadcaster", "Broadcaster")
+                        .WithMany()
+                        .HasForeignKey("BroadcasterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("UranBot.Public.Database.Entities.DiscordChannel", "Channel")
+                        .WithMany()
+                        .HasForeignKey("ChannelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("UranBot.Public.Database.Entities.DiscordRole", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Broadcaster");
+
+                    b.Navigation("Channel");
+
+                    b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("UranBot.Twitch.Plugin.Database.Entities.TwitchBroadcaster", b =>
+                {
+                    b.HasOne("UranBot.Public.Database.Entities.DiscordGuild", "Guild")
+                        .WithMany()
+                        .HasForeignKey("GuildId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Guild");
                 });
 
             modelBuilder.Entity("UranBot.Twitch.Plugin.Database.Entities.TwitchClip", b =>

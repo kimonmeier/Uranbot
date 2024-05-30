@@ -1,5 +1,4 @@
 ﻿using UranBot.Database;
-using UranBot.EventHandler.SyncGuild;
 
 namespace UranBot.EventHandler.SyncGuildChannel;
 
@@ -18,10 +17,16 @@ public class SyncGuildChannelEventHandler : IRequestHandler<SyncGuildChannelEven
         
         if (discordChannel is null)
         {
-            long guildId = _dbContext.GetGuildIdByDiscordId(request.Guild.Id);
+            long? guildId = _dbContext.GetEntityIdByDiscordId<DiscordGuild>(request.Guild.Id);
+
+            if (guildId is null)
+            {
+                throw new Exception($"The Guild for Channel {request.Channel.Id} couldn't be found");
+            }
+            
             discordChannel = new DiscordChannel()
             {
-                DiscordId = request.Channel.Id, GuildId = guildId, Name = request.Channel.Name
+                DiscordId = request.Channel.Id, GuildId = guildId.Value, Name = request.Channel.Name
             };
             
             _dbContext.Set<DiscordChannel>().Add(discordChannel);

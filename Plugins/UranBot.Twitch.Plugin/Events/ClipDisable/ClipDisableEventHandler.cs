@@ -11,14 +11,15 @@ public class ClipDisableEventHandler : IRequestHandler<ClipDisableEvent>
 
     public async Task Handle(ClipDisableEvent request, CancellationToken cancellationToken)
     {
-        TwitchBroadcaster? broadcaster = await _dbContext.Set<TwitchBroadcaster>().SingleOrDefaultAsync(x => x.BroadcasterName == request.BroadcasterName);
+        long guildId = _dbContext.GetEntityIdByDiscordId<DiscordGuild>(request.InteractionContext.Guild.Id)!.Value;
+        TwitchBroadcaster? broadcaster = _dbContext.Set<TwitchBroadcaster>().SingleOrDefault(x => x.GuildId == guildId && x.BroadcasterName == request.BroadcasterName);
         if (broadcaster is null)
         {
             await request.SendFailureMessage($"The broadcaster {request.BroadcasterName} is unkown");
             return;
         }
 
-        TwitchClipSettings? settings = await _dbContext.Set<TwitchClipSettings>().SingleOrDefaultAsync(x => x.BroadcasterId == broadcaster.Id);
+        TwitchClipSettings? settings = _dbContext.Set<TwitchClipSettings>().SingleOrDefault(x => x.BroadcasterId == broadcaster.Id);
         if (settings is null)
         {
             await request.SendFailureMessage($"The clip sharing is already disabled for {request.BroadcasterName}");

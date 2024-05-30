@@ -15,7 +15,12 @@ public class TwitchBroadcasterConfiguration : IEntityTypeConfiguration<TwitchBro
             .ValueGeneratedOnAdd();
 
         builder
-            .HasIndex(x => x.BroadcasterName)
+            .HasOne(x => x.Guild)
+            .WithMany()
+            .HasForeignKey(x => x.GuildId);
+
+        builder
+            .HasIndex([nameof(TwitchBroadcaster.BroadcasterName), nameof(TwitchBroadcaster.GuildId)])
             .IsUnique();
     }
 }

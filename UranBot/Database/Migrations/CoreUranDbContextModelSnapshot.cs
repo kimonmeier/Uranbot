@@ -146,6 +146,27 @@ namespace UranBot.Database.Migrations
                     b.ToTable("DiscordReaction", "Discord");
                 });
 
+            modelBuilder.Entity("UranBot.Public.Database.Entities.DiscordRole", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<ulong>("DiscordId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long>("GuildId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DiscordId");
+
+                    b.HasIndex("GuildId");
+
+                    b.ToTable("DiscordRole", "Discord");
+                });
+
             modelBuilder.Entity("UranBot.Public.Database.Entities.DiscordUser", b =>
                 {
                     b.Property<long>("Id")
@@ -227,6 +248,17 @@ namespace UranBot.Database.Migrations
                         .IsRequired();
 
                     b.Navigation("Message");
+                });
+
+            modelBuilder.Entity("UranBot.Public.Database.Entities.DiscordRole", b =>
+                {
+                    b.HasOne("UranBot.Public.Database.Entities.DiscordGuild", "Guild")
+                        .WithMany()
+                        .HasForeignKey("GuildId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Guild");
                 });
 #pragma warning restore 612, 618
         }

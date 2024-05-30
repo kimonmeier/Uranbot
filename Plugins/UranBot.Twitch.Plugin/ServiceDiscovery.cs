@@ -1,7 +1,6 @@
 ﻿using EFCoreSecondLevelCacheInterceptor;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using TwitchLib.Api;
 using TwitchLib.Api.Core.Enums;
 using UranBot.Public;
 using UranBot.Public.Services;
@@ -34,6 +33,7 @@ public class ServiceDiscovery : IServiceDiscovery
         });
 
         services.AddTransient<ClipTask>();
+        services.AddTransient<AnnouncementTask>();
 
         services.AddSingleton<IPlugin, TwitchPlugin>();
     }

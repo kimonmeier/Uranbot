@@ -1,6 +1,4 @@
-﻿using TwitchLib.Api;
-
-namespace UranBot.Twitch.Plugin.Events.DeleteClip;
+﻿namespace UranBot.Twitch.Plugin.Events.DeleteClip;
 
 public class DeleteClipEventHandler : IRequestHandler<DeleteClipEvent>
 {

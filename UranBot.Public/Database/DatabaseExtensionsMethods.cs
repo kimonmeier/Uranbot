@@ -2,37 +2,7 @@
 
 public static class DatabaseExtensionsMethods
 {
-    public static DiscordUser GetUserByDiscordId(this DbContext dbContext, ulong id)
-    {
-        return dbContext.GetEntityByDiscordId<DiscordUser>(id);
-    }
-    
-    public static long GetUserIdByDiscordId(this DbContext dbContext, ulong id)
-    {
-        return dbContext.GetUserByDiscordId(id).Id;
-    }
-    
-    public static DiscordGuild GetGuildByDiscordId(this DbContext dbContext, ulong id)
-    {
-        return dbContext.GetEntityByDiscordId<DiscordGuild>(id);
-    }
-    
-    public static long GetGuildIdByDiscordId(this DbContext dbContext, ulong id)
-    {
-        return dbContext.GetGuildByDiscordId(id).Id;
-    }
-    
-    public static DiscordChannel GetChannelByDiscordId(this DbContext dbContext, ulong id)
-    {
-        return dbContext.GetEntityByDiscordId<DiscordChannel>(id);
-    }
-    
-    public static long GetChannelIdByDiscordId(this DbContext dbContext, ulong id)
-    {
-        return dbContext.GetChannelByDiscordId(id).Id;
-    }
-
-    private static T GetEntityByDiscordId<T>(this DbContext dbContext, ulong id) where T : BaseDiscordEntity
+    public static T? GetEntityByDiscordId<T>(this DbContext dbContext, ulong id) where T : BaseDiscordEntity
     {
         T? entity = dbContext.Set<T>().SingleOrDefault(x => x.DiscordId == id);
 
@@ -42,5 +12,17 @@ public static class DatabaseExtensionsMethods
         }
 
         return entity;
+    }
+
+    public static long? GetEntityIdByDiscordId<T>(this DbContext dbContext, ulong id) where T : BaseDiscordEntity
+    {
+        var entityInfos = dbContext.Set<T>().Select(x => new { x.Id, x.DiscordId }).SingleOrDefault(x => x.DiscordId == id);
+        
+        if (entityInfos is null)
+        {
+            throw new Exception($"The Entity {typeof(T).Name} couldn't be found with the Id: {id}");
+        }
+
+        return entityInfos.Id;
     }
 }

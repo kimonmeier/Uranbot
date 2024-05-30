@@ -11,7 +11,8 @@ public class BroadcasterRemoveEventHandler : IRequestHandler<BroadcasterRemoveEv
 
     public async Task Handle(BroadcasterRemoveEvent request, CancellationToken cancellationToken)
     {
-        TwitchBroadcaster? twitchBroadcaster = await _dbContext.Set<TwitchBroadcaster>().FirstOrDefaultAsync(x => x.BroadcasterName == request.Name);
+        long guildId = _dbContext.GetEntityIdByDiscordId<DiscordGuild>(request.InteractionContext.Guild.Id)!.Value;
+        TwitchBroadcaster? twitchBroadcaster = _dbContext.Set<TwitchBroadcaster>().SingleOrDefault(x => x.GuildId == guildId &&x.BroadcasterName == request.Name);
 
         if (twitchBroadcaster is null)
         {
