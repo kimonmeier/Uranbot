@@ -41,13 +41,9 @@
 
     <ItemGroup>
       <None Remove="appsettings.json" />
-      <AdditionalFiles Include="appsettings.json">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </AdditionalFiles>
+      <AdditionalFiles Include="appsettings.json" />
       <None Remove="appsettings.example.json" />
-      <AdditionalFiles Include="appsettings.example.json">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </AdditionalFiles>
+      <AdditionalFiles Include="appsettings.example.json" />
     </ItemGroup>
 
 </Project>

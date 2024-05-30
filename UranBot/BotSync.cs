@@ -93,6 +93,10 @@ public static class BotSync
 
         foreach (SocketGuildUser guildUser in guild.Users)
         {
+            if (guildUser.IsBot)
+            {
+                continue;
+            }
             guildUser.SyncWithDatabase(dbContext);
         }
 
