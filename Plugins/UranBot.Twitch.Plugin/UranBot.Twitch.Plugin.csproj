@@ -33,5 +33,4 @@
         <PackageReference Include="Serilog.Sinks.Console" Version="5.0.1"/>
         <PackageReference Include="TwitchLib.Api" Version="3.9.0" />
     </ItemGroup>
-
 </Project>

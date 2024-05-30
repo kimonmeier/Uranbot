@@ -21,6 +21,7 @@ public class TwitchPlugin : IPlugin
     public void Start()
     {
         _tasks.Add(_taskManager.RegisterTask("Search Twitch Clips", (serviceProvider) => serviceProvider.GetRequiredService<ClipTask>().CheckClips(), TimeSpan.FromMinutes(5)));
+        _tasks.Add(_taskManager.RegisterTask("Search Announcements", (serviceProvider) => serviceProvider.GetRequiredService<AnnouncementTask>().CheckBroadcaster(), TimeSpan.FromMinutes(5)));
     }
 
     public void Stop()

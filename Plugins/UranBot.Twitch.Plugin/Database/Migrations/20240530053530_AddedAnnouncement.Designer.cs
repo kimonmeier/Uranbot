@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UranBot.Twitch.Plugin.Database;
 
@@ -10,9 +11,11 @@ using UranBot.Twitch.Plugin.Database;
 namespace UranBot.Twitch.Plugin.Database.Migrations
 {
     [DbContext(typeof(TwitchUranDbContext))]
-    partial class TwitchUranDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240530053530_AddedAnnouncement")]
+    partial class AddedAnnouncement
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

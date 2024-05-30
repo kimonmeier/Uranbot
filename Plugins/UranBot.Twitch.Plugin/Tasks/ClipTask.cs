@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using TwitchLib.Api;
 using UranBot.Twitch.Plugin.Events.ClipRequestApproval;
 using UranBot.Twitch.Plugin.Events.ClipUpdate;
 using UranBot.Twitch.Plugin.Events.PostClip;

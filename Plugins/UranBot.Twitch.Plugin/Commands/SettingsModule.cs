@@ -1,4 +1,6 @@
-﻿using UranBot.Twitch.Plugin.Events.ClipDisable;
+﻿using UranBot.Twitch.Plugin.Events.AnnouncementDisable;
+using UranBot.Twitch.Plugin.Events.AnnouncementEnable;
+using UranBot.Twitch.Plugin.Events.ClipDisable;
 using UranBot.Twitch.Plugin.Events.ClipEnable;
 using UranBot.Twitch.Plugin.Events.ClipSharedModeChange;
 
@@ -61,6 +63,35 @@ public class SettingsModule : InteractionModuleBase
         [SlashCommand("disable", "Disables the clip handling for a broadcaster")]
         public Task Disable(string broadcasterName)
             => _uranInteractionService.ExecuteInteraction(new ClipDisableEvent()
+            {
+                BroadcasterName = broadcasterName, InteractionContext = Context
+            });
+    }
+
+    [Group("announcement", "Settings for the announcements")]
+    public class AnnouncementModule : InteractionModuleBase
+    {
+        private readonly IUranInteractionService _uranInteractionService;
+
+        public AnnouncementModule(IUranInteractionService uranInteractionService)
+        {
+            _uranInteractionService = uranInteractionService;
+        }
+
+        [SlashCommand("enable", "Enables the announcement for the specified broadcaster")]
+        public Task Enable(string broadcasterName, SocketTextChannel textChannel, SocketRole mentionRole, string message)
+            => _uranInteractionService.ExecuteInteraction(new AnnouncementEnableEvent()
+            {
+                BroadcasterName = broadcasterName,
+                Channel = textChannel,
+                Message = message,
+                Role = mentionRole,
+                InteractionContext = Context
+            });
+
+        [SlashCommand("disable", "Disables the announcement for the specified broadcaster")]
+        public Task Disable(string broadcasterName)
+            => _uranInteractionService.ExecuteInteraction(new AnnouncementDisableEvent()
             {
                 BroadcasterName = broadcasterName, InteractionContext = Context
             });

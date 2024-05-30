@@ -1,5 +1,4 @@
-﻿using TwitchLib.Api;
-using TwitchLib.Api.Helix.Models.Users.GetUsers;
+﻿using TwitchLib.Api.Helix.Models.Users.GetUsers;
 
 namespace UranBot.Twitch.Plugin.Events.BroadcasterAdd;
 

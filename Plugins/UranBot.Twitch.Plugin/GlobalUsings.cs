@@ -6,6 +6,7 @@ global using Discord.WebSocket;
 global using MediatR;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.EntityFrameworkCore.Metadata.Builders;
+global using TwitchLib.Api;
 global using TwitchLib.Api.Helix.Models.Clips.GetClips;
 global using UranBot.Public.Database;
 global using UranBot.Public.Database.Entities;

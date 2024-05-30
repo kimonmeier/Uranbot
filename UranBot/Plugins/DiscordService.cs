@@ -25,6 +25,11 @@ public class DiscordService : IDiscordService
         return PrivateSendMessage(discordChannelId, embed: message);
     }
 
+    public Task<long> SendMessage(long discordChannelId, string message, Embed embed)
+    {
+        return PrivateSendMessage(discordChannelId, message, embed);
+    }
+
     public Task UpdateMessage(DiscordMessage message, Embed embed)
     {
         SocketTextChannel? socketTextChannel = _discordSocketClient.GetChannel(message.Channel.DiscordId) as SocketTextChannel;
@@ -34,6 +39,17 @@ public class DiscordService : IDiscordService
         }
         
         return socketTextChannel.ModifyMessageAsync(message.DiscordId, x => x.Embed = embed);
+    }
+
+    public Task UpdateMessage(DiscordMessage message, string messageContent)
+    {
+        SocketTextChannel? socketTextChannel = _discordSocketClient.GetChannel(message.Channel.DiscordId) as SocketTextChannel;
+        if (socketTextChannel is null)
+        {
+            throw new ArgumentException($"The Provided Discord Channel is not a TextChannel");
+        }
+        
+        return socketTextChannel.ModifyMessageAsync(message.DiscordId, x => x.Content = messageContent);
     }
 
     public Task<IMessage> GetMessage(long messageId)
