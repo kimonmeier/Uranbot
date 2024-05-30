@@ -93,10 +93,6 @@ public static class BotSync
 
         foreach (SocketGuildUser guildUser in guild.Users)
         {
-            if (guildUser.IsBot)
-            {
-                continue;
-            }
             guildUser.SyncWithDatabase(dbContext);
         }
 
@@ -104,10 +100,6 @@ public static class BotSync
         
         foreach (SocketGuildUser user in guild.Users)
         {
-            if (user.IsBot)
-            {
-                continue;
-            }
             long userId = dbContext.GetUserIdByDiscordId(user.Id);
             long guildId = dbContext.GetGuildIdByDiscordId(guild.Id);
                 
