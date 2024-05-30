@@ -38,7 +38,7 @@ public class AnnouncementTask
         if (!streamInfos.Streams.Any())
         {
             // When user was online in the last 10 minutes he probably had a disconnect, so we don't have to announce him a second time
-            if (_searchedBroadcasters[broadcaster.Id] > DateTime.Now.AddMinutes(-10))
+            if (_searchedBroadcasters[broadcaster.Id] > DateTime.Now.AddMinutes(-15))
             {
                 return;
             }
