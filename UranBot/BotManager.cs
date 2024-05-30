@@ -35,33 +35,39 @@ public class BotManager
         {
             ILogger logger = Log.ForContext<DiscordSocketClient>();
             LogEventLevel logLevel;
-            
-            
+
+
             switch (message.Severity)
             {
                 case LogSeverity.Critical:
                     logLevel = LogEventLevel.Fatal;
+
                     break;
                 case LogSeverity.Error:
                     logLevel = LogEventLevel.Error;
+
                     break;
                 case LogSeverity.Warning:
                     logLevel = LogEventLevel.Warning;
+
                     break;
                 case LogSeverity.Info:
                     logLevel = LogEventLevel.Information;
+
                     break;
                 case LogSeverity.Debug:
                     logLevel = LogEventLevel.Debug;
+
                     break;
-                
+
                 case LogSeverity.Verbose:
                 default:
                     logLevel = LogEventLevel.Verbose;
+
                     break;
             }
-            
-            
+
+
             logger.Write(logLevel, message.Exception, message.Message);
 
             return Task.CompletedTask;
@@ -75,7 +81,7 @@ public class BotManager
         {
             await _serviceProvider.GetRequiredService<InteractionService>().RegisterCommandsGloballyAsync();
             _taskManager.SetInitialized();
-            
+
             synchroniseDatabaseTaskId = _taskManager.RegisterTask("Synchronise Database", x => x.GetRequiredService<ISender>().Send(new SyncDatabaseEvent()), TimeSpan.FromMinutes(15));
         };
         _discordSocketClient.JoinedGuild += _ =>
@@ -84,14 +90,33 @@ public class BotManager
 
             return Task.CompletedTask;
         };
+        _discordSocketClient.LeftGuild += _ =>
+        {
+            _taskManager.StartTask(synchroniseDatabaseTaskId);
+
+            return Task.CompletedTask;
+        };
+        _discordSocketClient.UserJoined += _ =>
+        {
+            _taskManager.StartTask(synchroniseDatabaseTaskId);
+
+            return Task.CompletedTask;
+        };
+        _discordSocketClient.UserLeft += (_, _) =>
+        {
+            _taskManager.StartTask(synchroniseDatabaseTaskId);
+
+            return Task.CompletedTask;
+        };
         _discordSocketClient.InteractionCreated += (x) =>
         {
-            _serviceProvider.GetRequiredService<InteractionService>().ExecuteCommandAsync(new SocketInteractionContext(_discordSocketClient, x), _serviceProvider).ConfigureAwait(false);
+            _serviceProvider.GetRequiredService<InteractionService>().ExecuteCommandAsync(new SocketInteractionContext(_discordSocketClient, x), _serviceProvider)
+                .ConfigureAwait(false);
 
             return Task.CompletedTask;
         };
         _discordSocketClient.ReactionAdded += DiscordSocketClientOnReactionAdded;
-        
+
         _pluginManager.StartPlugins();
         _taskManager.StartTaskManager();
     }
@@ -102,9 +127,10 @@ public class BotManager
         {
             return;
         }
-        
+
         using IServiceScope scope = _serviceProvider.CreateScope();
-        DiscordReaction? discordReaction = scope.ServiceProvider.GetRequiredService<CoreUranDbContext>().Set<DiscordReaction>().SingleOrDefault(x => x.Message.DiscordId == message.Id && x.EmoteName == reaction.Emote.Name);
+        DiscordReaction? discordReaction = scope.ServiceProvider.GetRequiredService<CoreUranDbContext>().Set<DiscordReaction>()
+            .SingleOrDefault(x => x.Message.DiscordId == message.Id && x.EmoteName == reaction.Emote.Name);
 
         if (discordReaction is null)
         {
@@ -121,7 +147,7 @@ public class BotManager
     {
         _pluginManager.StopPlugins();
         _taskManager.Dispose();
-        
+
         await _discordSocketClient?.StopAsync()!;
     }
 }
