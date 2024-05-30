@@ -1,6 +1,7 @@
 ﻿using UranBot.Database;
 using UranBot.EventHandler.SyncGuildChannel;
 using UranBot.EventHandler.SyncGuildMember;
+using UranBot.EventHandler.SyncGuildRole;
 
 namespace UranBot.EventHandler.SyncGuild;
 
@@ -42,13 +43,19 @@ public class SyncGuildEventHandler : IRequestHandler<SyncGuildEvent, DiscordGuil
             }, cancellationToken);
         }
         
-        await _dbContext.SaveChangesAsync(cancellationToken);
-        
         foreach (SocketGuildUser user in request.SocketGuild.Users)
         {
             await _sender.Send(new SyncGuildMemberEvent()
             {
                 Guild = request.SocketGuild, User = user
+            }, cancellationToken);
+        }
+        
+        foreach (SocketRole role in request.SocketGuild.Roles)
+        {
+            await _sender.Send(new SyncGuildRoleEvent()
+            {
+                Guild = request.SocketGuild, Role = role
             }, cancellationToken);
         }
         
