@@ -66,6 +66,8 @@ public class AnnouncementTask
 
     private async Task CheckForOnlineBroadcaster(TwitchBroadcaster broadcaster, Stream stream)
     {
+        _searchedBroadcasters[broadcaster.Id] = DateTime.Now;
+        
         TwitchAnnouncement? announcement = _dbContext.Set<TwitchAnnouncement>().SingleOrDefault(x => x.BroadcasterId == broadcaster.Id);
         if (announcement is not null)
         {
