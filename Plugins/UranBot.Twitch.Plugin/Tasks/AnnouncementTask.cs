@@ -37,6 +37,11 @@ public class AnnouncementTask
 
         if (!streamInfos.Streams.Any())
         {
+            // When user was online in the last 10 minutes he probably had a disconnect, so we don't have to announce him a second time
+            if (_searchedBroadcasters[broadcaster.Id] > DateTime.Now.AddMinutes(-10))
+            {
+                return;
+            }
             await CheckForOfflineBroadcaster(broadcaster);
         }
         else
@@ -68,12 +73,6 @@ public class AnnouncementTask
             {
                 Announcement = announcement, Stream = stream
             });
-            return;
-        }
-
-        // When user was online in the last 5 minutes he probably had a disconnect, so we don't have to announce him a second time
-        if (_searchedBroadcasters[broadcaster.Id] > DateTime.Now.AddMinutes(-10))
-        {
             return;
         }
 
