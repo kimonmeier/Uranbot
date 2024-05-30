@@ -34,6 +34,13 @@ public static class DatabaseExtensionsMethods
 
     private static T GetEntityByDiscordId<T>(this DbContext dbContext, ulong id) where T : BaseDiscordEntity
     {
-        return dbContext.Set<T>().Single(x => x.DiscordId == id);
+        T? entity = dbContext.Set<T>().SingleOrDefault(x => x.DiscordId == id);
+
+        if (entity is null)
+        {
+            throw new Exception($"The Entity {typeof(T).Name} couldn't be found with the Id: {id}");
+        }
+
+        return entity;
     }
 }

@@ -21,7 +21,11 @@ Console.CancelKeyPress += (sender, eventArgs) =>
 };
 
 Log.Logger = new LoggerConfiguration()
+#if DEBUG
     .MinimumLevel.Debug()
+#else
+    .MinimumLevel.Information()
+#endif
     .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
     .Enrich.FromLogContext()
     .WriteTo.Console(outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} [{Level}] ({SourceContext}) {Message}{NewLine}{Exception}", theme: AnsiConsoleTheme.Code)
