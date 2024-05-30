@@ -1,10 +1,10 @@
 ﻿using Discord;
-using Discord.Commands;
 using Discord.Interactions;
 using Serilog.Events;
 using UranBot.Configuration;
 using UranBot.Database;
 using UranBot.EventHandler.ReactionAdded;
+using UranBot.EventHandler.SyncDatabase;
 using UranBot.Plugins;
 using ILogger = Serilog.ILogger;
 
@@ -69,23 +69,20 @@ public class BotManager
 
         await _discordSocketClient.LoginAsync(TokenType.Bot, discordConfiguration.Token);
         await _discordSocketClient.StartAsync();
-        
+
+        Guid synchroniseDatabaseTaskId = Guid.Empty;
         _discordSocketClient.Ready += async () =>
         {
             await _serviceProvider.GetRequiredService<InteractionService>().RegisterCommandsGloballyAsync();
             _taskManager.SetInitialized();
             
-            _taskManager.RegisterTask("Synchronise Database", CheckDiscordServers, TimeSpan.FromHours(1));
+            synchroniseDatabaseTaskId = _taskManager.RegisterTask("Synchronise Database", x => x.GetRequiredService<ISender>().Send(new SyncDatabaseEvent()), TimeSpan.FromMinutes(15));
         };
-        _discordSocketClient.JoinedGuild += async guild =>
+        _discordSocketClient.JoinedGuild += _ =>
         {
-            using IServiceScope scope = _serviceProvider.CreateScope();
+            _taskManager.StartTask(synchroniseDatabaseTaskId);
 
-            CoreUranDbContext uranDbContext = scope.ServiceProvider.GetRequiredService<CoreUranDbContext>();
-            guild.SyncWithDatabase(uranDbContext);
-            await guild.SyncGuildMemberWithDatabase(uranDbContext);
-
-            await uranDbContext.SaveChangesAsync();
+            return Task.CompletedTask;
         };
         _discordSocketClient.InteractionCreated += (x) =>
         {
@@ -118,13 +115,6 @@ public class BotManager
         {
             Reaction = discordReaction
         });
-    }
-
-    private async Task CheckDiscordServers(IServiceProvider serviceProvider)
-    {
-        CoreUranDbContext uranDbContext = serviceProvider.GetRequiredService<CoreUranDbContext>();
-        await serviceProvider.GetRequiredService<DiscordSocketClient>().SyncWithDatabase(uranDbContext);
-        await uranDbContext.SaveChangesAsync();
     }
 
     public async Task StopBot()

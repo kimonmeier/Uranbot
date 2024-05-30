@@ -49,6 +49,11 @@ public class TaskManager : ITaskManager, IDisposable
         return guid;
     }
 
+    internal void StartTask(Guid taskId)
+    {
+        _taskEntries[taskId].LastExecution = DateTime.MinValue.Ticks;
+    }
+    
     public void CancelTask(Guid taskId)
     {
         _taskEntries.Remove(taskId);
