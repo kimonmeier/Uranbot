@@ -39,7 +39,7 @@ public abstract class BaseUranDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlite("Data Source=.\\database.db;", op =>
+        optionsBuilder.UseSqlite("Data Source=database.db;", op =>
         {
             op.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
             op.MigrationsHistoryTable($"__EFMigrationHistoryTable{Name}");
