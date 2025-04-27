@@ -18,7 +18,13 @@ public class UpdateAnnouncementEventHandler : IRequestHandler<UpdateAnnouncement
     public async Task Handle(UpdateAnnouncementEvent request, CancellationToken cancellationToken)
     {
         EmbedBuilder embedBuilder = await TwitchEmbedHelper.CreateAnnouncement(_twitchApi, request.Announcement.Broadcaster, request.Stream);
-        IMessage message = await _discordService.GetMessage(request.Announcement.Message);
+        IMessage? message = await _discordService.GetMessage(request.Announcement.Message);
+
+        if (message is null)
+        {
+            throw new Exception("Unable to get announcement message");
+        }
+        
         EmbedBuilder? postedBuilder = message.Embeds.FirstOrDefault()?.ToEmbedBuilder();
         if (postedBuilder?.Equals(embedBuilder.Build().ToEmbedBuilder()) ?? false)
         {

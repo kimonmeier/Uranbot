@@ -19,7 +19,12 @@ public class ClipUpdateEventHandler : IRequestHandler<ClipUpdateEvent>
     { 
         EmbedBuilder embedBuilder = TwitchEmbedHelper.CreateClipEmbed(request.Clip);
 
-        IMessage message = await _discordService.GetMessage(request.TwitchClip.DiscordMessage);
+        IMessage? message = await _discordService.GetMessage(request.TwitchClip.DiscordMessage);
+        if (message is null)
+        {
+            throw new Exception("Unable to get clip message");
+        }
+        
         EmbedBuilder? postedBuilder = message.Embeds.FirstOrDefault()?.ToEmbedBuilder();
         if (postedBuilder?.Equals(embedBuilder.Build().ToEmbedBuilder()) ?? false)
         {

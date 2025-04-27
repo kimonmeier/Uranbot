@@ -52,12 +52,12 @@ public class DiscordService : IDiscordService
         return socketTextChannel.ModifyMessageAsync(message.DiscordId, x => x.Content = messageContent);
     }
 
-    public Task<IMessage> GetMessage(long messageId)
+    public Task<IMessage?> GetMessage(long messageId)
     {
         return GetMessage(_dbContext.Set<DiscordMessage>().Single(x => x.Id == messageId));
     }
 
-    public Task<IMessage> GetMessage(DiscordMessage message)
+    public Task<IMessage?> GetMessage(DiscordMessage message)
     {
         return (_discordSocketClient.GetChannel(message.Channel.DiscordId) as SocketTextChannel)!.GetMessageAsync(message.DiscordId);
     }
@@ -103,8 +103,12 @@ public class DiscordService : IDiscordService
             return;
         }
 
-        IMessage message = await textChannel.GetMessageAsync(discordMessage.DiscordId);
-        await message.DeleteAsync();
+        IMessage? message = await textChannel.GetMessageAsync(discordMessage.DiscordId);
+
+        if (message is not null)
+        {
+            await message.DeleteAsync();
+        }
 
         _dbContext.Remove(discordMessage);
         await _dbContext.SaveChangesAsync();

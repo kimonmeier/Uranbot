@@ -12,9 +12,9 @@ public interface IDiscordService
     
     Task UpdateMessage(DiscordMessage message, string messageContent);
     
-    Task<IMessage> GetMessage(long messageId);
+    Task<IMessage?> GetMessage(long messageId);
     
-    Task<IMessage> GetMessage(DiscordMessage message);
+    Task<IMessage?> GetMessage(DiscordMessage message);
 
     Task DeleteMessage(long discordMessageId);
 
