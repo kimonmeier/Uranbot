@@ -20,7 +20,10 @@ public class DiscordReactionConfiguration : IEntityTypeConfiguration<DiscordReac
             .HasForeignKey(x => x.MessageId);
 
         builder
-            .Ignore(x => x.Request);
+            .Ignore(x => x.AddRequest);
+        
+        builder
+            .Ignore(x => x.RemoveRequest);
         
         builder
             .HasIndex([nameof(DiscordReaction.MessageId), nameof(DiscordReaction.EmoteName)])

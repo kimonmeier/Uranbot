@@ -2,7 +2,7 @@
 
 public interface IReactionService
 {
-    Task<DiscordReaction> AddReaction(long discordMessageId, string emoteName, IRequest<bool> @event);
+    Task<DiscordReaction> AddReaction(long discordMessageId, string emoteName, IRequest<bool> eventOnAdd, IRequest<bool>? eventOnRemove = null);
 
     Task RemoveReaction(long discordReactionId);
 }

@@ -2,22 +2,22 @@
 
 namespace UranBot.EventHandler.ReactionAdded;
 
-public class ReactionTriggeredEventHandler : IRequestHandler<ReactionTriggeredEvent>
+public class ReactionAddTriggeredEventHandler : IRequestHandler<ReactionAddTriggeredEvent>
 {
     private readonly CoreUranDbContext _dbContext;
     private readonly ISender _sender;
     private readonly IDiscordService _discordService;
 
-    public ReactionTriggeredEventHandler(CoreUranDbContext dbContext, ISender sender, IDiscordService discordService)
+    public ReactionAddTriggeredEventHandler(CoreUranDbContext dbContext, ISender sender, IDiscordService discordService)
     {
         _dbContext = dbContext;
         _sender = sender;
         _discordService = discordService;
     }
 
-    public async Task Handle(ReactionTriggeredEvent request, CancellationToken cancellationToken)
+    public async Task Handle(ReactionAddTriggeredEvent request, CancellationToken cancellationToken)
     {
-        var deleteMessage = await _sender.Send(request.Reaction.Request, cancellationToken);
+        var deleteMessage = await _sender.Send(request.Reaction.AddRequest, cancellationToken);
 
         if (!deleteMessage)
         {

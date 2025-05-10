@@ -16,17 +16,31 @@ public class DiscordReaction : BaseEntity
 
     public string EmoteName { get; set; }
 
-    public IRequest<bool> Request
+    public IRequest<bool>? RemoveRequest
     {
-        get => Event.Request;
-        set => Event.Request = value;
+        get => RemoveEvent.Request;
+        set => RemoveEvent.Request = value;
     }
 
-    public BaseEvent Event { get; set; } = new();
+    public BaseEvent RemoveEvent { get; set; } = new();
 
-    public byte[] RequestJson
+    public byte[] RemoveRequestJson
     {
-        get => Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(Event));
-        set => Event = JsonConvert.DeserializeObject<BaseEvent>(Encoding.UTF8.GetString(value)) ?? throw new ArgumentException();
+        get => Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(RemoveEvent));
+        set => RemoveEvent = JsonConvert.DeserializeObject<BaseEvent>(Encoding.UTF8.GetString(value)) ?? throw new ArgumentException();
+    }
+    
+    public IRequest<bool> AddRequest
+    {
+        get => AddEvent.Request;
+        set => AddEvent.Request = value;
+    }
+
+    public BaseEvent AddEvent { get; set; } = new();
+
+    public byte[] AddRequestJson
+    {
+        get => Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(AddEvent));
+        set => AddEvent = JsonConvert.DeserializeObject<BaseEvent>(Encoding.UTF8.GetString(value)) ?? throw new ArgumentException();
     }
 }

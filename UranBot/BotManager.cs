@@ -4,6 +4,7 @@ using Serilog.Events;
 using UranBot.Configuration;
 using UranBot.Database;
 using UranBot.EventHandler.ReactionAdded;
+using UranBot.EventHandler.ReactionRemoved;
 using UranBot.EventHandler.SyncDatabase;
 using UranBot.Plugins;
 using ILogger = Serilog.ILogger;
@@ -138,7 +139,7 @@ public class BotManager
             return;
         }
 
-        await scope.ServiceProvider.GetRequiredService<ISender>().Send(new ReactionTriggeredEvent()
+        await scope.ServiceProvider.GetRequiredService<ISender>().Send(new ReactionAddTriggeredEvent()
         {
             Reaction = discordReaction
         });
@@ -161,8 +162,10 @@ public class BotManager
             return;
         }
         
-        coreUranDbContext.Remove(discordReaction);
-        await coreUranDbContext.SaveChangesAsync();
+        await scope.ServiceProvider.GetRequiredService<ISender>().Send(new ReactionRemoveTriggeredEvent()
+        {
+            Reaction = discordReaction
+        });
     }
 
     public async Task StopBot()
