@@ -116,6 +116,7 @@ public class BotManager
             return Task.CompletedTask;
         };
         _discordSocketClient.ReactionAdded += DiscordSocketClientOnReactionAdded;
+        _discordSocketClient.ReactionRemoved += DiscordSocketClientOnReactionRemoved;
 
         _pluginManager.StartPlugins();
         _taskManager.StartTaskManager();
@@ -141,6 +142,27 @@ public class BotManager
         {
             Reaction = discordReaction
         });
+    }
+
+    private async Task DiscordSocketClientOnReactionRemoved(Cacheable<IUserMessage, ulong> message, Cacheable<IMessageChannel, ulong> channel, SocketReaction reaction)
+    {
+        if (_discordSocketClient.GetUser(reaction.UserId).IsBot)
+        {
+            return;
+        }
+        
+        using IServiceScope scope = _serviceProvider.CreateScope();
+        CoreUranDbContext coreUranDbContext = scope.ServiceProvider.GetRequiredService<CoreUranDbContext>();
+        DiscordReaction? discordReaction = coreUranDbContext.Set<DiscordReaction>()
+            .SingleOrDefault(x => x.Message.DiscordId == message.Id && x.EmoteName == reaction.Emote.Name);
+        
+        if (discordReaction is null)
+        {
+            return;
+        }
+        
+        coreUranDbContext.Remove(discordReaction);
+        await coreUranDbContext.SaveChangesAsync();
     }
 
     public async Task StopBot()
