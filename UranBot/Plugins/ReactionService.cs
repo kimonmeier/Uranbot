@@ -14,7 +14,12 @@ public class ReactionService : IReactionService
         _dbContext = dbContext;
     }
 
-    public async Task<DiscordReaction> AddReaction(long discordMessageId, string emoteName, IRequest<bool> eventOnAdd, IRequest<bool>? eventOnRemove = null)
+    public Task<DiscordReaction> AddReaction(long discordMessageId, string emoteName, IRequest<bool> eventOnAdd, IRequest<bool>? eventOnRemove = null)
+    {
+        return AddReaction(discordMessageId, Emoji.Parse(emoteName), eventOnAdd, eventOnRemove);
+    }
+    
+    public async Task<DiscordReaction> AddReaction(long discordMessageId, Emoji emote, IRequest<bool> eventOnAdd, IRequest<bool>? eventOnRemove = null)
     {
         DiscordMessage discordMessage = _dbContext.Set<DiscordMessage>().Single(x => x.Id == discordMessageId);
         SocketChannel socketChannel = _discordSocketClient.GetChannel(_dbContext.Set<DiscordChannel>().Single(x => x.Id == discordMessage.ChannelId).DiscordId);
@@ -25,7 +30,6 @@ public class ReactionService : IReactionService
 
 
         IMessage message = await textChannel.GetMessageAsync(discordMessage.DiscordId);
-        Emoji emote = Emoji.Parse(emoteName);
         await message.AddReactionAsync(emote);
 
         DiscordReaction reaction = new()
