@@ -1,4 +1,5 @@
 ﻿using UranBot.Database;
+using UranBot.Public.Events;
 
 namespace UranBot.EventHandler.ReactionAdded;
 
@@ -17,6 +18,11 @@ public class ReactionAddTriggeredEventHandler : IRequestHandler<ReactionAddTrigg
 
     public async Task Handle(ReactionAddTriggeredEvent request, CancellationToken cancellationToken)
     {
+        if (request.Reaction.RemoveRequest is BaseReactionContextEvent baseReactionContext)
+        {
+            baseReactionContext.UserId = request.UserId;
+        }
+        
         var deleteMessage = await _sender.Send(request.Reaction.AddRequest, cancellationToken);
 
         if (!deleteMessage)

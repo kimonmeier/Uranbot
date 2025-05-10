@@ -141,6 +141,7 @@ public class BotManager
 
         await scope.ServiceProvider.GetRequiredService<ISender>().Send(new ReactionAddTriggeredEvent()
         {
+            UserId = reaction.UserId,
             Reaction = discordReaction
         });
     }
@@ -164,6 +165,7 @@ public class BotManager
         
         await scope.ServiceProvider.GetRequiredService<ISender>().Send(new ReactionRemoveTriggeredEvent()
         {
+            UserId = reaction.UserId,
             Reaction = discordReaction
         });
     }
