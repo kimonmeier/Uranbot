@@ -8,6 +8,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{9BFD
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UranBot.Twitch.Plugin", "Plugins\UranBot.Twitch.Plugin\UranBot.Twitch.Plugin.csproj", "{45DC537B-53A6-476F-946D-55E0E466456D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UranBot.ReactionRole.Plugin", "Plugins\UranBot.ReactionRole.Plugin\UranBot.ReactionRole.Plugin.csproj", "{EE80EB92-857F-41D5-BF34-B5A9912F26C9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,8 +28,13 @@ Global
 		{45DC537B-53A6-476F-946D-55E0E466456D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{45DC537B-53A6-476F-946D-55E0E466456D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{45DC537B-53A6-476F-946D-55E0E466456D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE80EB92-857F-41D5-BF34-B5A9912F26C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE80EB92-857F-41D5-BF34-B5A9912F26C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE80EB92-857F-41D5-BF34-B5A9912F26C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE80EB92-857F-41D5-BF34-B5A9912F26C9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{45DC537B-53A6-476F-946D-55E0E466456D} = {9BFD841A-DC5F-4050-99D5-2739FCF3E5F2}
+		{EE80EB92-857F-41D5-BF34-B5A9912F26C9} = {9BFD841A-DC5F-4050-99D5-2739FCF3E5F2}
 	EndGlobalSection
 EndGlobal
