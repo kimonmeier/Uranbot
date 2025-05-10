@@ -12,6 +12,8 @@ public interface IDiscordService
     
     Task UpdateMessage(DiscordMessage message, string messageContent);
     
+    Task<long?> GetMessageIdByDiscordId(ulong discordMessageId);
+    
     Task<IMessage?> GetMessage(long messageId);
     
     Task<IMessage?> GetMessage(DiscordMessage message);

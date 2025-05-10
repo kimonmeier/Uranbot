@@ -52,6 +52,11 @@ public class DiscordService : IDiscordService
         return socketTextChannel.ModifyMessageAsync(message.DiscordId, x => x.Content = messageContent);
     }
 
+    public Task<long?> GetMessageIdByDiscordId(ulong discordMessageId)
+    {
+        return _dbContext.Set<DiscordMessage>().Where(x => x.DiscordId == discordMessageId).Select(x => (long?)x.Id).FirstOrDefaultAsync();
+    }
+
     public Task<IMessage?> GetMessage(long messageId)
     {
         return GetMessage(_dbContext.Set<DiscordMessage>().Single(x => x.Id == messageId));
