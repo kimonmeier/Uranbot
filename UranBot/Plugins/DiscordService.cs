@@ -52,6 +52,11 @@ public class DiscordService : IDiscordService
         return socketTextChannel.ModifyMessageAsync(message.DiscordId, x => x.Content = messageContent);
     }
 
+    public Task<long?> GetMessageIdByDiscordId(ulong discordMessageId)
+    {
+        return _dbContext.Set<DiscordMessage>().Where(x => x.DiscordId == discordMessageId).Select(x => (long?)x.Id).FirstOrDefaultAsync();
+    }
+
     public Task<IMessage?> GetMessage(long messageId)
     {
         return GetMessage(_dbContext.Set<DiscordMessage>().Single(x => x.Id == messageId));
@@ -112,5 +117,33 @@ public class DiscordService : IDiscordService
 
         _dbContext.Remove(discordMessage);
         await _dbContext.SaveChangesAsync();
+    }
+
+    public Task AddRoleToUser(ulong guildId, ulong discordUserId, ulong discordRoleId)
+    {
+        var guild = _discordSocketClient.GetGuild(guildId);
+        var user = guild.GetUser(discordUserId);
+        var role = guild.GetRole(discordRoleId);
+        
+        if (user is null || role is null)
+        {
+            throw new ArgumentException("User or Role not found");
+        }
+        
+        return user.AddRoleAsync(role);
+    }
+    
+    public Task RemoveRoleFromUser(ulong guildId, ulong discordUserId, ulong discordRoleId)
+    {
+        var guild = _discordSocketClient.Guilds.First();
+        var user = guild.GetUser(discordUserId);
+        var role = guild.GetRole(discordRoleId);
+        
+        if (user is null || role is null)
+        {
+            throw new ArgumentException("User or Role not found");
+        }
+        
+        return user.RemoveRoleAsync(role);
     }
 }

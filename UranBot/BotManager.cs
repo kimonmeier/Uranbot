@@ -4,6 +4,7 @@ using Serilog.Events;
 using UranBot.Configuration;
 using UranBot.Database;
 using UranBot.EventHandler.ReactionAdded;
+using UranBot.EventHandler.ReactionRemoved;
 using UranBot.EventHandler.SyncDatabase;
 using UranBot.Plugins;
 using ILogger = Serilog.ILogger;
@@ -116,6 +117,7 @@ public class BotManager
             return Task.CompletedTask;
         };
         _discordSocketClient.ReactionAdded += DiscordSocketClientOnReactionAdded;
+        _discordSocketClient.ReactionRemoved += DiscordSocketClientOnReactionRemoved;
 
         _pluginManager.StartPlugins();
         _taskManager.StartTaskManager();
@@ -137,8 +139,33 @@ public class BotManager
             return;
         }
 
-        await scope.ServiceProvider.GetRequiredService<ISender>().Send(new ReactionTriggeredEvent()
+        await scope.ServiceProvider.GetRequiredService<ISender>().Send(new ReactionAddTriggeredEvent()
         {
+            UserId = reaction.UserId,
+            Reaction = discordReaction
+        });
+    }
+
+    private async Task DiscordSocketClientOnReactionRemoved(Cacheable<IUserMessage, ulong> message, Cacheable<IMessageChannel, ulong> channel, SocketReaction reaction)
+    {
+        if (_discordSocketClient.GetUser(reaction.UserId).IsBot)
+        {
+            return;
+        }
+        
+        using IServiceScope scope = _serviceProvider.CreateScope();
+        CoreUranDbContext coreUranDbContext = scope.ServiceProvider.GetRequiredService<CoreUranDbContext>();
+        DiscordReaction? discordReaction = coreUranDbContext.Set<DiscordReaction>()
+            .SingleOrDefault(x => x.Message.DiscordId == message.Id && x.EmoteName == reaction.Emote.Name);
+        
+        if (discordReaction is null)
+        {
+            return;
+        }
+        
+        await scope.ServiceProvider.GetRequiredService<ISender>().Send(new ReactionRemoveTriggeredEvent()
+        {
+            UserId = reaction.UserId,
             Reaction = discordReaction
         });
     }

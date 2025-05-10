@@ -12,6 +12,8 @@ public interface IDiscordService
     
     Task UpdateMessage(DiscordMessage message, string messageContent);
     
+    Task<long?> GetMessageIdByDiscordId(ulong discordMessageId);
+    
     Task<IMessage?> GetMessage(long messageId);
     
     Task<IMessage?> GetMessage(DiscordMessage message);
@@ -19,4 +21,8 @@ public interface IDiscordService
     Task DeleteMessage(long discordMessageId);
 
     Task DeleteMessage(DiscordMessage discordMessage);
+    
+    Task AddRoleToUser(ulong guildId, ulong discordUserId, ulong discordRoleId);
+    
+    Task RemoveRoleFromUser(ulong guildId, ulong discordUserId, ulong discordRoleId);
 }

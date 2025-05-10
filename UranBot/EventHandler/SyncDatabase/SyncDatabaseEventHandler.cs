@@ -21,6 +21,16 @@ public class SyncDatabaseEventHandler : IRequestHandler<SyncDatabaseEvent>
     {
         var guilds = _dbContext.Set<DiscordGuild>().ToList();
 
+        List<Task> tasks = new();
+        foreach (SocketGuild socketGuild in _client.Guilds)
+        {
+            tasks.Add(
+                socketGuild.DownloadUsersAsync()
+            );
+        }
+        
+        await Task.WhenAll(tasks.ToArray());
+
         var users = _client.Guilds.SelectMany(x => x.Users);
         foreach (SocketGuildUser user in users)
         {
