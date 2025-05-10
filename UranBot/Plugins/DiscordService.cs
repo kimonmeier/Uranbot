@@ -113,4 +113,32 @@ public class DiscordService : IDiscordService
         _dbContext.Remove(discordMessage);
         await _dbContext.SaveChangesAsync();
     }
+
+    public Task AddRoleToUser(ulong guildId, ulong discordUserId, ulong discordRoleId)
+    {
+        var guild = _discordSocketClient.GetGuild(guildId);
+        var user = guild.GetUser(discordUserId);
+        var role = guild.GetRole(discordRoleId);
+        
+        if (user is null || role is null)
+        {
+            throw new ArgumentException("User or Role not found");
+        }
+        
+        return user.AddRoleAsync(role);
+    }
+    
+    public Task RemoveRoleFromUser(ulong guildId, ulong discordUserId, ulong discordRoleId)
+    {
+        var guild = _discordSocketClient.Guilds.First();
+        var user = guild.GetUser(discordUserId);
+        var role = guild.GetRole(discordRoleId);
+        
+        if (user is null || role is null)
+        {
+            throw new ArgumentException("User or Role not found");
+        }
+        
+        return user.RemoveRoleAsync(role);
+    }
 }

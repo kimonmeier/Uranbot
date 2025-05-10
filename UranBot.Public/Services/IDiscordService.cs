@@ -19,4 +19,8 @@ public interface IDiscordService
     Task DeleteMessage(long discordMessageId);
 
     Task DeleteMessage(DiscordMessage discordMessage);
+    
+    Task AddRoleToUser(ulong guildId, ulong discordUserId, ulong discordRoleId);
+    
+    Task RemoveRoleFromUser(ulong guildId, ulong discordUserId, ulong discordRoleId);
 }
