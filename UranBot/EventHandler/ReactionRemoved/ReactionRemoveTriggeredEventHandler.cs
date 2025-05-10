@@ -22,13 +22,19 @@ public class ReactionRemoveTriggeredEventHandler : IRequestHandler<ReactionRemov
         {
             return;
         }
-
+        
+        IRequest<bool> requestToSend;
         if (request.Reaction.RemoveRequest is BaseReactionContextEvent baseReactionContext)
         {
             baseReactionContext.UserId = request.UserId;
+            requestToSend = baseReactionContext;
+        }
+        else
+        {
+            requestToSend = request.Reaction.AddRequest;
         }
         
-        var deleteMessage = await _sender.Send(request.Reaction.RemoveRequest, cancellationToken);
+        var deleteMessage = await _sender.Send(requestToSend, cancellationToken);
 
         if (!deleteMessage)
         {

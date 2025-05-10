@@ -18,12 +18,18 @@ public class ReactionAddTriggeredEventHandler : IRequestHandler<ReactionAddTrigg
 
     public async Task Handle(ReactionAddTriggeredEvent request, CancellationToken cancellationToken)
     {
-        if (request.Reaction.RemoveRequest is BaseReactionContextEvent baseReactionContext)
+        IRequest<bool> requestToSend;
+        if (request.Reaction.AddRequest is BaseReactionContextEvent baseReactionContext)
         {
             baseReactionContext.UserId = request.UserId;
+            requestToSend = baseReactionContext;
+        }
+        else
+        {
+            requestToSend = request.Reaction.AddRequest;
         }
         
-        var deleteMessage = await _sender.Send(request.Reaction.AddRequest, cancellationToken);
+        var deleteMessage = await _sender.Send(requestToSend, cancellationToken);
 
         if (!deleteMessage)
         {
